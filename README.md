@@ -53,3 +53,15 @@ Core Requirements
 Real-Time Behaviour
 •	Messages must appear instantly without page reload
 
+
+1.5 Non-Functional Requirements (Usability & HCI)
+•	Twitter-inspired clean UI
+•	Light and dark mode option
+•	Fast load time and smooth interactions
+•	Mobile-responsive layout
+•	Readable fonts and good spacing
+•	Consistent message bubble colours
+•	No layout break when using emojis
+•	Stability of chat storage
+
+
