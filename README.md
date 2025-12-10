@@ -1,97 +1,172 @@
 # Software-Development---Assignment-2
 
-ACTIVITY 1 — Requirements / Creative Session (Custom Version for the Chat App)
+# ACTIVITY 1 — Requirements / Creative Session (Custom Version for the Chat App)
 
-1.1 Project Overview
-This project is a real-time, mobile-friendly chat application designed for everyday communication. Unlike simple games like Hangman or Hide & Seek, a chat app has a wide range of real-world uses, making the project feel more practical and meaningful.
+---
 
-The application allows users to:
-•	Enter a username
-•	Send and receive messages instantly
-•	View chat history
-•	Experience a clean Twitter-inspired UI with optional dark/light mode
-•	Use extra features like delete chat, auto-scroll, emoji support, and message colours
-The goal is to create a lightweight tool that feels like something people could use daily.
+## **1.1 Project Overview**
 
-1.2 Target Audience
-The primary audience includes:
-•	Students
-•	Casual social media users
-•	People who prefer simple, fast communication tools
-They expect:
-•	Quick message sending
-•	Mobile responsiveness
-•	A smooth UI like social media apps
-•	A modern, familiar feel
+This project is a **real-time, mobile-friendly chat application** designed for everyday communication.  
+Unlike simple games like Hangman or Hide & Seek, a chat app has a wide range of real-world uses, making the project feel more practical and meaningful.
 
-1.3 User Profiles
-User Profile 1 — Aarav, 17 (Student)
-•	Uses social media daily
-•	Prefers clean UI and fast messaging
-•	Likes username-only identification
-•	Needs an app that works on both mobile and desktop
-•	Wants instant feedback after sending messages
-User Profile 2 — Maya, 22 (Uni Student)
-•	Communicates mainly through mobile
-•	Prefers dark/light minimal layouts
-•	Needs chat history to stay saved
-•	Values message colours and readability
-•	Appreciates auto-scroll and emoji support
+The app allows users to:
 
+- Enter a username  
+- Send and receive messages instantly  
+- View chat history  
+- Use a Twitter-inspired UI (light/dark mode)  
+- Access extra features such as delete chat, auto-scroll, emoji support, and message colours  
 
-1.4 Functional Requirements (What the app MUST do)
-Core Requirements
-•	Allow user to enter a username
-•	Real-time message sending (instant display)
-•	Scrollable chat window with auto-scroll
-•	Store chat history using localStorage
-•	Allow user to delete chat history
-•	Support emojis inside message input
-•	Colour-coded message bubbles
-•	Timestamp for each message
-•	Smooth performance on mobile and desktop
-Real-Time Behaviour
-•	Messages must appear instantly without page reload
+The goal is to create a lightweight chat tool that feels like something users could realistically use daily.
 
+---
 
-1.5 Non-Functional Requirements (Usability & HCI)
-•	Twitter-inspired clean UI
-•	Light and dark mode option
-•	Fast load time and smooth interactions
-•	Mobile-responsive layout
-•	Readable fonts and good spacing
-•	Consistent message bubble colours
-•	No layout break when using emojis
-•	Stability of chat storage
+## **1.2 Target Audience**
 
-1.7 Storyboard (User Journey)
-1.	User opens the app
-2.	Enters a username
-3.	Navigates to the chat screen
-4.	Views stored chat history
-5.	Types and sends a message
-6.	Message appears instantly
-7.	Auto-scroll moves to the newest message
-8.	User can delete chat
-9.	On return, chat history is still available
+The target users include:
 
+- Students  
+- Casual social media users  
+- People who want quick, simple messaging tools  
 
-1.8 Risk Analysis
-Risk	Impact	Mitigation
-Storage not working	High	Test localStorage early and keep data structures simple
-Real-time behaviour not smooth	Medium	Update DOM immediately after sending messages
-UI scaling issues	Medium	Use responsive CSS (flexbox/grid)
-Emojis breaking layout	Low	Keep emoji input inside the text field
-Accidental chat deletion	Low	Add confirmation prompt
+These users expect:
 
-1.9 Development Strategy
-An iterative/Agile approach will be used.
-Small features (username input → messaging → UI → storage → extra features) will be built one at a time and tested immediately.
+- Fast message sending  
+- A responsive mobile-friendly interface  
+- Smooth typing and sending experience  
+- A clean, familiar UI similar to social media platforms  
+
+---
+
+## **1.3 User Profiles**
+
+### **User Profile 1 — Aarav, 17 (Student)**
+
+- Uses social media daily  
+- Prefers clean UI and fast interactions  
+- Likes username-only identification  
+- Needs the app to work on both mobile and desktop  
+- Wants instant feedback after sending messages  
+
+### **User Profile 2 — Maya, 22 (Uni Student)**
+
+- Communicates mainly through mobile  
+- Prefers minimal layouts (light/dark mode)  
+- Needs chat history to stay saved  
+- Values message colours and readability  
+- Appreciates extra features like auto-scroll and emoji support  
+
+---
+
+## **1.4 Functional Requirements (What the app MUST do)**
+
+### **Core Functionalities**
+
+- Allow user to enter a username  
+- Real-time message sending (instant display)  
+- Scrollable chat window with auto-scroll  
+- Store chat history using localStorage  
+- Allow user to delete chat history  
+- Support emojis inside message input  
+- Colour-coded message bubbles  
+- Timestamp for each message  
+- Smooth performance on mobile and desktop  
+
+### **Real-Time Behaviour**
+
+- Messages must appear instantly without page reload  
+
+---
+
+## **1.5 Non-Functional Requirements (Usability & HCI)**
+
+- Clean UI inspired by Twitter  
+- Light and dark mode support  
+- Fast load time and smooth interactions  
+- Mobile-responsive layout  
+- Readable fonts and good spacing  
+- Consistent message bubble colours  
+- No layout break when using emojis  
+- Stable storage for chat history  
+
+---
+
+## **1.6 UI Mockups (Planned Layout)**
+
+**Screen 1 — Username Page**
+- Username input field  
+- “Enter Chat” button  
+
+**Screen 2 — Main Chat**
+- Header showing username  
+- Scrollable chat area  
+- Auto-scroll behaviour  
+- Message bubble colours  
+- Input bar with:
+  - Text field  
+  - Emoji icon  
+  - Send button  
+
+**Theme:** Twitter-like clean white + optional dark mode.
+
+*(Mockups will be added later.)*
+
+---
+
+## **1.7 Storyboard (User Journey)**
+
+1. User opens the app  
+2. Enters a username  
+3. Navigates to the chat screen  
+4. Views stored chat history  
+5. Types and sends a message  
+6. Message appears instantly  
+7. Auto-scroll moves to newest message  
+8. User can delete chat  
+9. On return, chat history is still available  
+
+---
+
+## **1.8 Risk Analysis**
+
+| **Risk** | **Impact** | **Mitigation** |
+|----------|------------|----------------|
+| Storage not working | High | Test localStorage early and keep data simple |
+| Real-time behaviour not smooth | Medium | Update DOM immediately after sending |
+| UI scaling issues | Medium | Use responsive CSS (flexbox/grid) |
+| Emojis breaking layout | Low | Keep emoji input inside text field |
+| Accidental chat deletion | Low | Add confirmation prompt |
+
+---
+
+## **1.9 Development Strategy**
+
+An **iterative/Agile approach** will be used.
+
+Small features (username input → messaging → UI → storage → extra features) will be built and tested one at a time.
+
 This reduces bugs, improves debugging, and makes it easier to add features like:
-•	Auto-scroll
-•	Emoji support
-•	Message colours
-•	Delete chat
 
+- Auto-scroll  
+- Emoji support  
+- Message colours  
+- Delete chat  
+
+---
+
+## **1.10 Initial Test Plan**
+
+| **Test Case** | **Expected Result** |
+|---------------|---------------------|
+| Enter username | User moves to chat screen |
+| Send message | Message appears instantly |
+| Emoji input | Emoji displays correctly |
+| Auto-scroll | Chat jumps to latest message |
+| Delete chat | Chat clears and storage resets |
+| Refresh page | Chat history persists |
+| Desktop view | Layout adjusts correctly |
+| Mobile view | Smooth typing + responsive UI |
+
+---
 
 
