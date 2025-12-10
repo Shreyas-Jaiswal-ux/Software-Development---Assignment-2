@@ -37,3 +37,19 @@ User Profile 2 — Maya, 22 (Uni Student)
 •	Needs chat history to stay saved
 •	Values message colours and readability
 •	Appreciates auto-scroll and emoji support
+
+
+1.4 Functional Requirements (What the app MUST do)
+Core Requirements
+•	Allow user to enter a username
+•	Real-time message sending (instant display)
+•	Scrollable chat window with auto-scroll
+•	Store chat history using localStorage
+•	Allow user to delete chat history
+•	Support emojis inside message input
+•	Colour-coded message bubbles
+•	Timestamp for each message
+•	Smooth performance on mobile and desktop
+Real-Time Behaviour
+•	Messages must appear instantly without page reload
+
