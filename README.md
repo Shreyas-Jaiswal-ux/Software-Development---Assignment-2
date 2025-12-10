@@ -23,3 +23,17 @@ They expect:
 •	Mobile responsiveness
 •	A smooth UI like social media apps
 •	A modern, familiar feel
+
+1.3 User Profiles
+User Profile 1 — Aarav, 17 (Student)
+•	Uses social media daily
+•	Prefers clean UI and fast messaging
+•	Likes username-only identification
+•	Needs an app that works on both mobile and desktop
+•	Wants instant feedback after sending messages
+User Profile 2 — Maya, 22 (Uni Student)
+•	Communicates mainly through mobile
+•	Prefers dark/light minimal layouts
+•	Needs chat history to stay saved
+•	Values message colours and readability
+•	Appreciates auto-scroll and emoji support
