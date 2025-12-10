@@ -64,4 +64,16 @@ Real-Time Behaviour
 •	No layout break when using emojis
 •	Stability of chat storage
 
+1.7 Storyboard (User Journey)
+1.	User opens the app
+2.	Enters a username
+3.	Navigates to the chat screen
+4.	Views stored chat history
+5.	Types and sends a message
+6.	Message appears instantly
+7.	Auto-scroll moves to the newest message
+8.	User can delete chat
+9.	On return, chat history is still available
+
+
 
