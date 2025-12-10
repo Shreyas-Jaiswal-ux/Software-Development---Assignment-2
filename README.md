@@ -76,4 +76,22 @@ Real-Time Behaviour
 9.	On return, chat history is still available
 
 
+1.8 Risk Analysis
+Risk	Impact	Mitigation
+Storage not working	High	Test localStorage early and keep data structures simple
+Real-time behaviour not smooth	Medium	Update DOM immediately after sending messages
+UI scaling issues	Medium	Use responsive CSS (flexbox/grid)
+Emojis breaking layout	Low	Keep emoji input inside the text field
+Accidental chat deletion	Low	Add confirmation prompt
+
+1.9 Development Strategy
+An iterative/Agile approach will be used.
+Small features (username input → messaging → UI → storage → extra features) will be built one at a time and tested immediately.
+This reduces bugs, improves debugging, and makes it easier to add features like:
+•	Auto-scroll
+•	Emoji support
+•	Message colours
+•	Delete chat
+
+
 
