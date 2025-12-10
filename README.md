@@ -169,4 +169,29 @@ This reduces bugs, improves debugging, and makes it easier to add features like:
 
 ---
 
+# ACTIVITY 2 — Design Analysis Session
+
+---
+
+## **2.1 Refinement of Requirements**
+
+Based on the initial plan from Activity 1, the requirements were reviewed and simplified to ensure the chat app remains achievable within the project timeline.
+
+### **Refined Functional Requirements**
+- Simple username entry (no sign-up system)
+- Instant message display using front-end logic
+- Auto-scroll behavior for smooth chat experience
+- LocalStorage-based message history
+- Delete chat button with confirmation pop-up
+- Support for emojis inside the message input field
+- Clean UI inspired by Twitter (light/dark themes optional)
+
+### **Refined Non-Functional Requirements**
+- Strong focus on mobile responsiveness  
+- Fast and smooth DOM updates  
+- Layout should not break when emojis or long messages are used  
+- Consistent styling for all message bubbles  
+
+---
+
 
