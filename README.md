@@ -193,5 +193,17 @@ Based on the initial plan from Activity 1, the requirements were reviewed and si
 - Consistent styling for all message bubbles  
 
 ---
+## **2.2 Pseudocode for Core Functions**
 
+Below is the high-level pseudocode describing how the main chat features will work.
+
+### **Function: Set Username**
+```pseudo
+FUNCTION setUsername():
+    username = value from username input field
+    IF username is empty:
+        show error message
+    ELSE:
+        save username to sessionStorage
+        redirect to chat screen
 
