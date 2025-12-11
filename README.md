@@ -206,6 +206,8 @@ FUNCTION setUsername():
     ELSE:
         save username to sessionStorage
         redirect to chat screen
+
+
 FUNCTION sendMessage():
     messageText = value from message input
     IF messageText is empty:
@@ -222,5 +224,15 @@ FUNCTION sendMessage():
     display message on screen
     clear message input
     scrollToBottom()
+
+
+
+FUNCTION loadChatHistory():
+    IF "messages" exists in localStorage:
+        messageArray = parse stored JSON
+        FOR each message in messageArray:
+            display message on screen
+    scrollToBottom()
+
 
 
