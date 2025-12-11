@@ -235,4 +235,13 @@ FUNCTION loadChatHistory():
     scrollToBottom()
 
 
+FUNCTION deleteChat():
+    show confirmation popup
+    IF user confirms:
+        clear localStorage
+        clear messageArray
+        refresh message display area
+
+
+
 
