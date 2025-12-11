@@ -206,4 +206,21 @@ FUNCTION setUsername():
     ELSE:
         save username to sessionStorage
         redirect to chat screen
+FUNCTION sendMessage():
+    messageText = value from message input
+    IF messageText is empty:
+        return (do nothing)
+
+    messageObject = {
+        user: username,
+        text: messageText,
+        time: current timestamp
+    }
+
+    append messageObject to messageArray
+    save messageArray to localStorage
+    display message on screen
+    clear message input
+    scrollToBottom()
+
 
