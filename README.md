@@ -242,6 +242,10 @@ FUNCTION deleteChat():
         clear messageArray
         refresh message display area
 
+FUNCTION scrollToBottom():
+    chatWindow.scrollTop = chatWindow.scrollHeight
+
+
 
 
 
