@@ -245,6 +245,43 @@ FUNCTION deleteChat():
 FUNCTION scrollToBottom():
     chatWindow.scrollTop = chatWindow.scrollHeight
 
+[Start]
+   |
+   v
+[Enter Username] ---> (Empty?) ---> [Show Error] ---> back to username input
+   |
+   v
+[Save Username]
+   |
+   v
+[Open Chat Screen]
+   |
+   v
+[Load Chat History]
+   |
+   v
+[User Types Message]
+   |
+   v
+[Send Message] ---> (Empty?) ---> ignore
+   |
+   v
+[Display Message + Save to Storage]
+   |
+   v
+[Auto-Scroll]
+   |
+   v
+[User Chooses to Delete Chat?] --Yes--> [Clear Storage + Reset UI]
+   |
+   v
+-------------------------
+|   Continues Looping   |
+-------------------------
+
+```
+
+
 
 
 
