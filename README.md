@@ -310,8 +310,19 @@ Clears storage and UI
 Returns to a clean chat screen
 
 ---
+2.5 Design Decisions
 
+LocalStorage chosen for simplicity and offline capability
 
+Auto-scroll implemented to prevent manual scrolling
+
+Emojis supported through Unicode (no external libraries needed)
+
+Message colours differentiate users visually
+
+DOM updates used instead of page refresh for real-time behaviour
+
+---
 
 
 
