@@ -280,7 +280,36 @@ FUNCTION scrollToBottom():
 -------------------------
 
 ```
+---
+2.4 Application State Management
 
+The chat app has three main states:
+
+State 1 — Username State
+
+User enters a username
+
+Validation occurs
+
+Username is stored temporarily
+
+State 2 — Chat State
+
+Chat history loads from storage
+
+User sends and receives messages
+
+Auto-scroll keeps view updated
+
+State 3 — Reset/Clear State
+
+Triggered when user deletes chat
+
+Clears storage and UI
+
+Returns to a clean chat screen
+
+---
 
 
 
