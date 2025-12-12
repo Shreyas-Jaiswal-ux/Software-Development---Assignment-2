@@ -281,7 +281,7 @@ FUNCTION scrollToBottom():
 
 ```
 ---
-2.4 Application State Management
+# ** 2.4 Application State Management **
 
 The chat app has three main states:
 
@@ -310,7 +310,7 @@ Clears storage and UI
 Returns to a clean chat screen
 
 ---
-2.5 Design Decisions
+## ** 2.5 Design Decisions **
 
 LocalStorage chosen for simplicity and offline capability
 
