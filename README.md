@@ -365,3 +365,16 @@ Each test includes an expected result and the actual outcome observed during tes
 | TC-17 | Theme Persistence | Set light mode → refresh | Theme remains the same after refresh |  |  |  |
 | TC-18 | Change User | Click **Change User** | App returns to username screen |  |  |  |
 
+---
+
+## **4.4 Cross-Tab / “Real-Time-ish” Tests (Bonus)**
+*(These tests demonstrate the app synchronising data through localStorage events.)*
+
+| Test ID | Feature | Test Steps | Expected Result | Actual Result | Pass/Fail | Evidence |
+|---|---|---|---|---|---|---|
+| TC-19 | Cross-tab message sync | Open app in Tab A + Tab B → send message in Tab A | Tab B updates messages automatically |  |  |  |
+| TC-20 | Cross-tab delete sync | Tab A delete chat → check Tab B | Tab B clears messages after storage update |  |  |  |
+| TC-21 | Cross-tab theme sync | Toggle theme in Tab A | Tab B updates theme automatically |  |  |  |
+
+---
+
