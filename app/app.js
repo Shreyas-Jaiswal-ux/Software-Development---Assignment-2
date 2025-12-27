@@ -1,70 +1,254 @@
 // Chat App Logic
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat App</title>
-  <link rel="stylesheet" href="./style.css" />
-</head>
-<body>
-  <main class="app">
+// =====================
+// Chat App (MVP)
+// =====================
+// Features:
+// - Username screen -> chat screen
+// - Instant message display (front-end "real-time")
+// - localStorage chat history
+// - auto-scroll to newest message
+// - delete chat (with confirmation)
+// - theme toggle (light/dark)
+// - message colours per username
+// - timestamps
+// =====================
 
-  <!-- ===== Username Screen ===== -->
-    <section id="screen-username" class="screen active" aria-label="Username screen">
-      <div class="card">
-        <h1 class="title">Chat App</h1>
-        <p class="subtitle">Twitter-ish vibes. Simple. Fast. Local.</p>
+/** Storage keys */
+const STORAGE_KEYS = {
+  THEME: "sd1_chat_theme",
+  USER: "sd1_chat_username",
+  MESSAGES: "sd1_chat_messages"
+};
 
-        <label class="label" for="usernameInput">Enter a username</label>
-        <input id="usernameInput" class="input" type="text" maxlength="20" placeholder="e.g. Shreyas" autocomplete="nickname" />
+/** DOM */
+const screenUsername = document.getElementById("screen-username");
+const screenChat = document.getElementById("screen-chat");
 
-        <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
+const usernameInput = document.getElementById("usernameInput");
+const usernameError = document.getElementById("usernameError");
+const enterChatBtn = document.getElementById("enterChatBtn");
 
-        <button id="enterChatBtn" class="btn primary">Enter Chat</button>
+const currentUserLabel = document.getElementById("currentUserLabel");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const messagesEl = document.getElementById("messages");
 
-   <div class="tiny-row">
-          <span class="tiny">Mode</span>
-          <button id="toggleThemeBtn" class="btn small">Toggle</button>
-        </div>
-      </div>
-    </section>
+const deleteChatBtn = document.getElementById("deleteChatBtn");
+const changeUserBtn = document.getElementById("changeUserBtn");
 
+const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+const toggleThemeBtn2 = document.getElementById("toggleThemeBtn2");
 
- <!-- ===== Chat Screen ===== -->
-    <section id="screen-chat" class="screen" aria-label="Chat screen">
-      <header class="topbar">
-        <div class="topbar-left">
-          <div class="avatar" aria-hidden="true"></div>
-          <div>
-            <div class="topbar-title">Chat</div>
-            <div class="topbar-subtitle">Signed in as <span id="currentUserLabel" class="pill">user</span></div>
-          </div>
-        </div>
+/** State */
+let username = "";
+let messages = [];
 
- <div class="topbar-right">
-          <button id="toggleThemeBtn2" class="btn small">Toggle Theme</button>
-          <button id="deleteChatBtn" class="btn danger small">Delete Chat</button>
-          <button id="changeUserBtn" class="btn small">Change User</button>
-        </div>
-      </header>
+/* ---------------------
+   Helpers
+--------------------- */
+function nowTimeString() {
+  // Simple readable timestamp (HH:MM)
+  const d = new Date();
+  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
 
- <section class="chat-area" aria-label="Messages">
-        <div id="messages" class="messages"></div>
-      </section>
+function sanitizeText(text) {
+  // Prevent blank/whitespace spam
+  return (text || "").trim();
+}
 
- <footer class="composer" aria-label="Message composer">
-        <input id="messageInput" class="input" type="text" maxlength="300" placeholder="Type a message… (emojis work 😭🔥)" />
-        <button id="sendBtn" class="btn primary">Send</button>
-      </footer>
+function hashStringToHue(str) {
+  // Deterministic colour per username
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash % 360;
+}
 
-  <p id="chatHint" class="hint">Tip: Press <b>Enter</b> to send.</p>
-    </section>
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem(STORAGE_KEYS.THEME, theme);
+}
 
-  </main>
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  setTheme(current === "dark" ? "light" : "dark");
+}
 
-  <script src="./app.js"></script>
-</body>
-</html>
+function saveMessages() {
+  localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
+}
 
+function loadMessages() {
+  const raw = localStorage.getItem(STORAGE_KEYS.MESSAGES);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function scrollToBottom() {
+  // Auto-scroll to newest message
+  const chatArea = document.querySelector(".chat-area");
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showUsernameScreen() {
+  screenChat.classList.remove("active");
+  screenUsername.classList.add("active");
+  usernameInput.value = "";
+  usernameError.textContent = "";
+  username = "";
+  localStorage.removeItem(STORAGE_KEYS.USER);
+}
+
+function showChatScreen() {
+  screenUsername.classList.remove("active");
+  screenChat.classList.add("active");
+  currentUserLabel.textContent = username;
+  messageInput.focus();
+}
+
+/* ---------------------
+   Rendering
+--------------------- */
+function renderMessage(msg) {
+  const item = document.createElement("div");
+  item.className = "msg";
+  const isMe = msg.user === username;
+  if (isMe) item.classList.add("me");
+
+  // Apply a subtle user colour accent
+  const hue = hashStringToHue(msg.user);
+  item.style.borderColor = `hsla(${hue}, 85%, 55%, 0.35)`;
+  item.style.background = `hsla(${hue}, 85%, 55%, 0.10)`;
+
+  const top = document.createElement("div");
+  top.className = "msg-top";
+
+  const userEl = document.createElement("div");
+  userEl.className = "msg-user";
+  userEl.textContent = msg.user;
+
+  const timeEl = document.createElement("div");
+  timeEl.className = "msg-time";
+  timeEl.textContent = msg.time;
+
+  top.appendChild(userEl);
+  top.appendChild(timeEl);
+
+  const textEl = document.createElement("div");
+  textEl.className = "msg-text";
+  textEl.textContent = msg.text;
+
+  item.appendChild(top);
+  item.appendChild(textEl);
+
+  messagesEl.appendChild(item);
+}
+
+function renderAllMessages() {
+  messagesEl.innerHTML = "";
+  messages.forEach(renderMessage);
+  scrollToBottom();
+}
+
+/* ---------------------
+   Core Actions
+--------------------- */
+function setUsername() {
+  const input = sanitizeText(usernameInput.value);
+
+  if (!input) {
+    usernameError.textContent = "Please enter a username.";
+    return;
+  }
+
+  if (input.length < 2) {
+    usernameError.textContent = "Username must be at least 2 characters.";
+    return;
+  }
+
+  username = input;
+  localStorage.setItem(STORAGE_KEYS.USER, username);
+
+  // Load history then show chat
+  messages = loadMessages();
+  showChatScreen();
+  renderAllMessages();
+}
+
+function sendMessage() {
+  const text = sanitizeText(messageInput.value);
+  if (!text) return; // ignore empty messages
+
+  const msg = {
+    user: username,
+    text,
+    time: nowTimeString()
+  };
+
+  messages.push(msg);
+  saveMessages();
+  renderMessage(msg);
+
+  messageInput.value = "";
+  messageInput.focus();
+  scrollToBottom();
+}
+
+function deleteChat() {
+  const ok = confirm("Delete all chat messages? This cannot be undone.");
+  if (!ok) return;
+
+  messages = [];
+  localStorage.removeItem(STORAGE_KEYS.MESSAGES);
+  renderAllMessages();
+}
+
+/* ---------------------
+   Init
+--------------------- */
+function init() {
+  // Theme
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
+  setTheme(savedTheme);
+
+  // Events
+  enterChatBtn.addEventListener("click", setUsername);
+  usernameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") setUsername();
+  });
+
+  sendBtn.addEventListener("click", sendMessage);
+  messageInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  deleteChatBtn.addEventListener("click", deleteChat);
+
+  changeUserBtn.addEventListener("click", () => {
+    showUsernameScreen();
+  });
+
+  toggleThemeBtn.addEventListener("click", toggleTheme);
+  toggleThemeBtn2.addEventListener("click", toggleTheme);
+
+  // Auto-login if user exists
+  const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+  if (savedUser) {
+    username = savedUser;
+    messages = loadMessages();
+    showChatScreen();
+    renderAllMessages();
+  } else {
+    showUsernameScreen();
+  }
+}
+
+init();
