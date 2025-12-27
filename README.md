@@ -390,3 +390,11 @@ Each test includes an expected result and the actual outcome observed during tes
 
 ---
 
+## **4.6 Bug Log (During Testing)**
+*(Fill this in only if you find issues — even 1–2 bugs with fixes looks really good.)*
+
+| Bug ID | Issue Found | Steps to Reproduce | Severity | Fix Applied | Status |
+|---|---|---|---|---|---|
+| BUG-01 |  |  | Low/Med/High |  | Open/Fixed |
+
+
