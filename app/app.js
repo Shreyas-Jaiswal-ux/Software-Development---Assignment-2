@@ -23,3 +23,10 @@
         <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
 
         <button id="enterChatBtn" class="btn primary">Enter Chat</button>
+
+   <div class="tiny-row">
+          <span class="tiny">Mode</span>
+          <button id="toggleThemeBtn" class="btn small">Toggle</button>
+        </div>
+      </div>
+    </section>
