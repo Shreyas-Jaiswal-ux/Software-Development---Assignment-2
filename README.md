@@ -342,5 +342,15 @@ Each test includes an expected result and the actual outcome observed during tes
 
 ---
 
+## **4.3 Functional Test Plan (Core Features)**
+
+| Test ID | Feature | Test Steps | Expected Result | Actual Result | Pass/Fail | Evidence (Screenshot) |
+|---|---|---|---|---|---|---|
+| TC-01 | Load App | Open `index.html` | Username screen loads with no errors |  |  |  |
+| TC-02 | Username Validation (Empty) | Click **Enter Chat** with empty username | Error shown: “Please enter a username.” |  |  |  |
+| TC-03 | Username Validation (Too short) | Enter `A` → Enter Chat | Error shown: “Username must be at least 2 characters.” |  |  |  |
+| TC-04 | Valid Username ورود | Enter valid username (e.g., Shreyas) → Enter Chat | App switches to chat screen and shows username |  |  |  |
+| TC-05 | Auto Login | Close tab → reopen app (same browser) | If username saved, app opens directly in chat screen |  |  |  |
+
 
 
