@@ -54,3 +54,8 @@
         <div id="messages" class="messages"></div>
       </section>
 
+ <footer class="composer" aria-label="Message composer">
+        <input id="messageInput" class="input" type="text" maxlength="300" placeholder="Type a message… (emojis work 😭🔥)" />
+        <button id="sendBtn" class="btn primary">Send</button>
+      </footer>
+
