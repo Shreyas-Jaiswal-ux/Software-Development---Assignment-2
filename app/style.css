@@ -1,254 +1,253 @@
 /* Chat App Styles */
 
-// =====================
-// Chat App (MVP)
-// =====================
-// Features:
-// - Username screen -> chat screen
-// - Instant message display (front-end "real-time")
-// - localStorage chat history
-// - auto-scroll to newest message
-// - delete chat (with confirmation)
-// - theme toggle (light/dark)
-// - message colours per username
-// - timestamps
-// =====================
-
-/** Storage keys */
-const STORAGE_KEYS = {
-  THEME: "sd1_chat_theme",
-  USER: "sd1_chat_username",
-  MESSAGES: "sd1_chat_messages"
-};
-
-/** DOM */
-const screenUsername = document.getElementById("screen-username");
-const screenChat = document.getElementById("screen-chat");
-
-const usernameInput = document.getElementById("usernameInput");
-const usernameError = document.getElementById("usernameError");
-const enterChatBtn = document.getElementById("enterChatBtn");
-
-const currentUserLabel = document.getElementById("currentUserLabel");
-const messageInput = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
-const messagesEl = document.getElementById("messages");
-
-const deleteChatBtn = document.getElementById("deleteChatBtn");
-const changeUserBtn = document.getElementById("changeUserBtn");
-
-const toggleThemeBtn = document.getElementById("toggleThemeBtn");
-const toggleThemeBtn2 = document.getElementById("toggleThemeBtn2");
-
-/** State */
-let username = "";
-let messages = [];
-
-/* ---------------------
-   Helpers
---------------------- */
-function nowTimeString() {
-  // Simple readable timestamp (HH:MM)
-  const d = new Date();
-  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+:root{
+  --bg: #0b0f14;
+  --card: #111827;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --border: rgba(255,255,255,0.10);
+  --primary: #1d9bf0; /* twitter-ish */
+  --danger: #ef4444;
+  --input: #0f172a;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --radius: 16px;
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-function sanitizeText(text) {
-  // Prevent blank/whitespace spam
-  return (text || "").trim();
+/* Light mode */
+[data-theme="light"]{
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: rgba(2,6,23,0.12);
+  --input: #f1f5f9;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
-function hashStringToHue(str) {
-  // Deterministic colour per username
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-  }
-  return hash % 360;
+*{ box-sizing: border-box; }
+body{
+  margin:0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
 }
 
-function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem(STORAGE_KEYS.THEME, theme);
+.app{
+  min-height: 100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
-  setTheme(current === "dark" ? "light" : "dark");
+/* Screens */
+.screen{ display:none; width: min(820px, 100%); }
+.screen.active{ display:block; }
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
 }
 
-function saveMessages() {
-  localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
+.title{
+  margin: 0 0 6px;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+}
+.subtitle{
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
-function loadMessages() {
-  const raw = localStorage.getItem(STORAGE_KEYS.MESSAGES);
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+.label{
+  display:block;
+  margin: 10px 0 6px;
+  color: var(--muted);
+  font-size: 14px;
 }
 
-function scrollToBottom() {
-  // Auto-scroll to newest message
-  const chatArea = document.querySelector(".chat-area");
-  chatArea.scrollTop = chatArea.scrollHeight;
+.input{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
+  outline: none;
+}
+.input:focus{
+  border-color: rgba(29,155,240,0.55);
+  box-shadow: 0 0 0 4px rgba(29,155,240,0.12);
 }
 
-function showUsernameScreen() {
-  screenChat.classList.remove("active");
-  screenUsername.classList.add("active");
-  usernameInput.value = "";
-  usernameError.textContent = "";
-  username = "";
-  localStorage.removeItem(STORAGE_KEYS.USER);
+.btn{
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.btn:hover{ filter: brightness(1.05); }
+.btn.primary{
+  margin-top: 12px;
+  background: var(--primary);
+  border-color: transparent;
+  color: white;
+  font-weight: 600;
+}
+.btn.danger{
+  background: var(--danger);
+  border-color: transparent;
+  color: white;
+}
+.btn.small{
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
 }
 
-function showChatScreen() {
-  screenUsername.classList.remove("active");
-  screenChat.classList.add("active");
-  currentUserLabel.textContent = username;
-  messageInput.focus();
+.error{
+  min-height: 18px;
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 13px;
 }
 
-/* ---------------------
-   Rendering
---------------------- */
-function renderMessage(msg) {
-  const item = document.createElement("div");
-  item.className = "msg";
-  const isMe = msg.user === username;
-  if (isMe) item.classList.add("me");
-
-  // Apply a subtle user colour accent
-  const hue = hashStringToHue(msg.user);
-  item.style.borderColor = `hsla(${hue}, 85%, 55%, 0.35)`;
-  item.style.background = `hsla(${hue}, 85%, 55%, 0.10)`;
-
-  const top = document.createElement("div");
-  top.className = "msg-top";
-
-  const userEl = document.createElement("div");
-  userEl.className = "msg-user";
-  userEl.textContent = msg.user;
-
-  const timeEl = document.createElement("div");
-  timeEl.className = "msg-time";
-  timeEl.textContent = msg.time;
-
-  top.appendChild(userEl);
-  top.appendChild(timeEl);
-
-  const textEl = document.createElement("div");
-  textEl.className = "msg-text";
-  textEl.textContent = msg.text;
-
-  item.appendChild(top);
-  item.appendChild(textEl);
-
-  messagesEl.appendChild(item);
+.tiny-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-function renderAllMessages() {
-  messagesEl.innerHTML = "";
-  messages.forEach(renderMessage);
-  scrollToBottom();
+/* Chat layout */
+#screen-chat{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-/* ---------------------
-   Core Actions
---------------------- */
-function setUsername() {
-  const input = sanitizeText(usernameInput.value);
-
-  if (!input) {
-    usernameError.textContent = "Please enter a username.";
-    return;
-  }
-
-  if (input.length < 2) {
-    usernameError.textContent = "Username must be at least 2 characters.";
-    return;
-  }
-
-  username = input;
-  localStorage.setItem(STORAGE_KEYS.USER, username);
-
-  // Load history then show chat
-  messages = loadMessages();
-  showChatScreen();
-  renderAllMessages();
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-function sendMessage() {
-  const text = sanitizeText(messageInput.value);
-  if (!text) return; // ignore empty messages
-
-  const msg = {
-    user: username,
-    text,
-    time: nowTimeString()
-  };
-
-  messages.push(msg);
-  saveMessages();
-  renderMessage(msg);
-
-  messageInput.value = "";
-  messageInput.focus();
-  scrollToBottom();
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+.avatar{
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(29,155,240,0.25);
+  border: 1px solid rgba(29,155,240,0.35);
+}
+.topbar-title{
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+.topbar-subtitle{
+  color: var(--muted);
+  font-size: 13px;
+}
+.pill{
+  display:inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
 }
 
-function deleteChat() {
-  const ok = confirm("Delete all chat messages? This cannot be undone.");
-  if (!ok) return;
-
-  messages = [];
-  localStorage.removeItem(STORAGE_KEYS.MESSAGES);
-  renderAllMessages();
+.topbar-right{
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-/* ---------------------
-   Init
---------------------- */
-function init() {
-  // Theme
-  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
-  setTheme(savedTheme);
-
-  // Events
-  enterChatBtn.addEventListener("click", setUsername);
-  usernameInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") setUsername();
-  });
-
-  sendBtn.addEventListener("click", sendMessage);
-  messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") sendMessage();
-  });
-
-  deleteChatBtn.addEventListener("click", deleteChat);
-
-  changeUserBtn.addEventListener("click", () => {
-    showUsernameScreen();
-  });
-
-  toggleThemeBtn.addEventListener("click", toggleTheme);
-  toggleThemeBtn2.addEventListener("click", toggleTheme);
-
-  // Auto-login if user exists
-  const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
-  if (savedUser) {
-    username = savedUser;
-    messages = loadMessages();
-    showChatScreen();
-    renderAllMessages();
-  } else {
-    showUsernameScreen();
-  }
+/* Message list */
+.chat-area{
+  height: min(62vh, 520px);
+  padding: 14px;
+  overflow: auto;
 }
 
-init();
+.messages{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg{
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  padding: 10px 12px;
+  max-width: 85%;
+}
+
+.msg.me{
+  align-self: flex-end;
+}
+
+.msg-top{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.msg-user{
+  font-weight: 700;
+  font-size: 13px;
+}
+.msg-time{
+  color: var(--muted);
+  font-size: 12px;
+}
+.msg-text{
+  line-height: 1.35;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Composer */
+.composer{
+  display:flex;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+.composer .input{
+  flex: 1;
+}
+
+.hint{
+  margin: 0;
+  padding: 10px 14px 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 520px){
+  .chat-area{ height: 62vh; }
+  .topbar{ align-items:flex-start; }
+  .msg{ max-width: 92%; }
+}
