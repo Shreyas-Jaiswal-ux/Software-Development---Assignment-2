@@ -42,3 +42,11 @@
             <div class="topbar-subtitle">Signed in as <span id="currentUserLabel" class="pill">user</span></div>
           </div>
         </div>
+
+ <div class="topbar-right">
+          <button id="toggleThemeBtn2" class="btn small">Toggle Theme</button>
+          <button id="deleteChatBtn" class="btn danger small">Delete Chat</button>
+          <button id="changeUserBtn" class="btn small">Change User</button>
+        </div>
+      </header>
+
