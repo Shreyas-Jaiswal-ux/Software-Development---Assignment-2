@@ -30,3 +30,15 @@
         </div>
       </div>
     </section>
+
+
+ <!-- ===== Chat Screen ===== -->
+    <section id="screen-chat" class="screen" aria-label="Chat screen">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="avatar" aria-hidden="true"></div>
+          <div>
+            <div class="topbar-title">Chat</div>
+            <div class="topbar-subtitle">Signed in as <span id="currentUserLabel" class="pill">user</span></div>
+          </div>
+        </div>
