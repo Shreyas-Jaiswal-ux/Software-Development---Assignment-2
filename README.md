@@ -410,4 +410,96 @@ After completing the test cases above, the application successfully met the core
 
 Any bugs identified were documented and resolved in the Bug Log section.
 
+# ACTIVITY 5 — End of Project Review
+
+---
+
+## **5.1 Project Overview**
+This project involved the design and development of a **real-time, mobile-friendly chat application**.  
+The aim was to build a practical application that allows users to communicate using a simple username-based system, with instant message display, persistent chat history, and a clean, modern interface.
+
+The project followed an **iterative development approach**, moving from requirements analysis to design, implementation, testing, and final evaluation.
+
+---
+
+## **5.2 Evaluation Against Requirements**
+
+The table below reviews whether the original requirements defined in Activity 1 were successfully met.
+
+| Requirement | Met? | Evidence |
+|---|---|---|
+| Username-based login | ✅ Yes | Username screen + validation tests |
+| Instant message sending | ✅ Yes | Messages appear immediately without refresh |
+| Chat history persistence | ✅ Yes | Messages saved using localStorage |
+| Auto-scroll to latest message | ✅ Yes | Chat scrolls automatically on new message |
+| Delete chat functionality | ✅ Yes | Delete button with confirmation popup |
+| Theme toggle (light/dark) | ✅ Yes | Toggle available on both screens |
+| Mobile responsiveness | ✅ Yes | Layout adapts on small screens |
+| Emoji support | ✅ Yes | Emojis render correctly in messages |
+
+Overall, all core functional and non-functional requirements were successfully achieved.
+
+---
+
+## **5.3 Strengths of the Project**
+The main strengths of the project include:
+
+- **Clear and simple user interface** inspired by modern social media platforms  
+- **Well-structured codebase**, with separation of HTML, CSS, and JavaScript  
+- **Persistent data storage** using localStorage  
+- **Responsive design**, allowing use on both mobile and desktop devices  
+- **Consistent development process**, following the planned activities from the assignment brief  
+
+These strengths demonstrate a good understanding of both **software development principles** and **user-centred design**.
+
+---
+
+## **5.4 Challenges Encountered**
+During development, several challenges were encountered:
+
+- Ensuring chat history persisted correctly without corrupting stored data  
+- Managing auto-scroll behaviour when many messages were sent quickly  
+- Maintaining a consistent layout across different screen sizes  
+- Preventing invalid inputs such as empty usernames or blank messages  
+
+These challenges were resolved through iterative testing and refining the logic in the JavaScript code.
+
+---
+
+## **5.5 Improvements and Future Enhancements**
+If more time and resources were available, the following improvements could be made:
+
+- Implementing a real backend using WebSockets for true multi-user real-time communication  
+- Adding user profile pictures or status indicators  
+- Introducing message editing or reactions  
+- Improving accessibility features such as screen reader support  
+
+These enhancements would further improve scalability and usability.
+
+---
+
+## **5.6 Reflection on Development Method**
+An **iterative/Agile approach** was used throughout the project.  
+Features were built in small stages (username handling, messaging, storage, UI enhancements) and tested immediately.
+
+This approach:
+
+- Reduced the number of bugs  
+- Made debugging easier  
+- Allowed features to be improved incrementally  
+
+The chosen development method proved suitable for a project of this scale.
+
+---
+
+## **5.7 Final Conclusion**
+The chat application successfully meets the objectives outlined at the start of the project.  
+It delivers a functional, user-friendly solution that demonstrates key software development skills, including planning, design, implementation, testing, and evaluation.
+
+The project provides a strong foundation for more advanced real-time applications and reflects a solid understanding of the software development lifecycle.
+
+---
+
+
+
 
