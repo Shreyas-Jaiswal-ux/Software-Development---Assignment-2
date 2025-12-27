@@ -324,5 +324,13 @@ DOM updates used instead of page refresh for real-time behaviour
 
 ---
 
+# ACTIVITY 4 — Testing
+
+---
+
+## **4.1 Testing Approach**
+Testing was carried out using **manual functional testing** (checking features work as expected) and **basic usability testing** (checking the UI feels clear and works on different screen sizes).  
+Each test includes an expected result and the actual outcome observed during testing.
+
 
 
