@@ -1,7 +1,5 @@
-// Chat App Logic
-
 // =====================
-// Chat App (MVP)
+// Chat App (Improved MVP)
 // =====================
 // Features:
 // - Username screen -> chat screen
@@ -12,6 +10,7 @@
 // - theme toggle (light/dark)
 // - message colours per username
 // - timestamps
+// - cross-tab sync via storage event (real-time-ish)
 // =====================
 
 /** Storage keys */
@@ -21,45 +20,53 @@ const STORAGE_KEYS = {
   MESSAGES: "sd1_chat_messages"
 };
 
+/** Helpers: DOM grab + safety */
+function $(id) {
+  return document.getElementById(id);
+}
+
 /** DOM */
-const screenUsername = document.getElementById("screen-username");
-const screenChat = document.getElementById("screen-chat");
+const screenUsername = $("screen-username");
+const screenChat = $("screen-chat");
 
-const usernameInput = document.getElementById("usernameInput");
-const usernameError = document.getElementById("usernameError");
-const enterChatBtn = document.getElementById("enterChatBtn");
+const usernameInput = $("usernameInput");
+const usernameError = $("usernameError");
+const enterChatBtn = $("enterChatBtn");
 
-const currentUserLabel = document.getElementById("currentUserLabel");
-const messageInput = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
-const messagesEl = document.getElementById("messages");
+const currentUserLabel = $("currentUserLabel");
+const messageInput = $("messageInput");
+const sendBtn = $("sendBtn");
+const messagesEl = $("messages");
 
-const deleteChatBtn = document.getElementById("deleteChatBtn");
-const changeUserBtn = document.getElementById("changeUserBtn");
+const deleteChatBtn = $("deleteChatBtn");
+const changeUserBtn = $("changeUserBtn");
 
-const toggleThemeBtn = document.getElementById("toggleThemeBtn");
-const toggleThemeBtn2 = document.getElementById("toggleThemeBtn2");
+const toggleThemeBtn = $("toggleThemeBtn");
+const toggleThemeBtn2 = $("toggleThemeBtn2");
 
 /** State */
 let username = "";
 let messages = [];
 
 /* ---------------------
-   Helpers
+   Utility
 --------------------- */
 function nowTimeString() {
-  // Simple readable timestamp (HH:MM)
   const d = new Date();
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 function sanitizeText(text) {
-  // Prevent blank/whitespace spam
   return (text || "").trim();
 }
 
+function sanitizeUsername(name) {
+  // Remove extra spaces inside too, and cap length for safety
+  const cleaned = sanitizeText(name).replace(/\s+/g, " ");
+  return cleaned.slice(0, 20);
+}
+
 function hashStringToHue(str) {
-  // Deterministic colour per username
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
@@ -93,37 +100,54 @@ function loadMessages() {
 }
 
 function scrollToBottom() {
-  // Auto-scroll to newest message
+  // Safe auto-scroll
   const chatArea = document.querySelector(".chat-area");
+  if (!chatArea) return;
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
+function setActiveScreen(which) {
+  // Safe screen switching even if one screen missing
+  if (screenUsername) screenUsername.classList.remove("active");
+  if (screenChat) screenChat.classList.remove("active");
+
+  if (which === "username" && screenUsername) screenUsername.classList.add("active");
+  if (which === "chat" && screenChat) screenChat.classList.add("active");
+}
+
+/* ---------------------
+   Screens
+--------------------- */
 function showUsernameScreen() {
-  screenChat.classList.remove("active");
-  screenUsername.classList.add("active");
-  usernameInput.value = "";
-  usernameError.textContent = "";
+  setActiveScreen("username");
+
+  if (usernameInput) usernameInput.value = "";
+  if (usernameError) usernameError.textContent = "";
+
   username = "";
   localStorage.removeItem(STORAGE_KEYS.USER);
 }
 
 function showChatScreen() {
-  screenUsername.classList.remove("active");
-  screenChat.classList.add("active");
-  currentUserLabel.textContent = username;
-  messageInput.focus();
+  setActiveScreen("chat");
+
+  if (currentUserLabel) currentUserLabel.textContent = username;
+  if (messageInput) messageInput.focus();
 }
 
 /* ---------------------
    Rendering
 --------------------- */
 function renderMessage(msg) {
+  if (!messagesEl) return;
+
   const item = document.createElement("div");
   item.className = "msg";
+
   const isMe = msg.user === username;
   if (isMe) item.classList.add("me");
 
-  // Apply a subtle user colour accent
+  // Colour per username
   const hue = hashStringToHue(msg.user);
   item.style.borderColor = `hsla(${hue}, 85%, 55%, 0.35)`;
   item.style.background = `hsla(${hue}, 85%, 55%, 0.10)`;
@@ -153,6 +177,7 @@ function renderMessage(msg) {
 }
 
 function renderAllMessages() {
+  if (!messagesEl) return;
   messagesEl.innerHTML = "";
   messages.forEach(renderMessage);
   scrollToBottom();
@@ -162,15 +187,15 @@ function renderAllMessages() {
    Core Actions
 --------------------- */
 function setUsername() {
-  const input = sanitizeText(usernameInput.value);
+  const input = sanitizeUsername(usernameInput ? usernameInput.value : "");
 
   if (!input) {
-    usernameError.textContent = "Please enter a username.";
+    if (usernameError) usernameError.textContent = "Please enter a username.";
     return;
   }
 
   if (input.length < 2) {
-    usernameError.textContent = "Username must be at least 2 characters.";
+    if (usernameError) usernameError.textContent = "Username must be at least 2 characters.";
     return;
   }
 
@@ -184,21 +209,29 @@ function setUsername() {
 }
 
 function sendMessage() {
-  const text = sanitizeText(messageInput.value);
+  const text = sanitizeText(messageInput ? messageInput.value : "");
   if (!text) return; // ignore empty messages
 
+  // Optional: stop ultra-long spam
+  const safeText = text.slice(0, 300);
+
   const msg = {
-    user: username,
-    text,
+    user: username || "user",
+    text: safeText,
     time: nowTimeString()
   };
 
   messages.push(msg);
   saveMessages();
+
+  // Render just this new message (faster than re-rendering everything)
   renderMessage(msg);
 
-  messageInput.value = "";
-  messageInput.focus();
+  if (messageInput) {
+    messageInput.value = "";
+    messageInput.focus();
+  }
+
   scrollToBottom();
 }
 
@@ -212,6 +245,23 @@ function deleteChat() {
 }
 
 /* ---------------------
+   Real-time-ish sync (across tabs)
+--------------------- */
+function setupStorageSync() {
+  window.addEventListener("storage", (e) => {
+    if (e.key === STORAGE_KEYS.MESSAGES) {
+      messages = loadMessages();
+      renderAllMessages();
+    }
+
+    if (e.key === STORAGE_KEYS.THEME) {
+      const newTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+    }
+  });
+}
+
+/* ---------------------
    Init
 --------------------- */
 function init() {
@@ -219,30 +269,52 @@ function init() {
   const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
   setTheme(savedTheme);
 
-  // Events
-  enterChatBtn.addEventListener("click", setUsername);
-  usernameInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") setUsername();
-  });
+  // Clear username error as user types (nice UX)
+  if (usernameInput && usernameError) {
+    usernameInput.addEventListener("input", () => {
+      usernameError.textContent = "";
+    });
+  }
 
-  sendBtn.addEventListener("click", sendMessage);
-  messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") sendMessage();
-  });
+  // Events (safe binding)
+  if (enterChatBtn) enterChatBtn.addEventListener("click", setUsername);
+  if (usernameInput) {
+    usernameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        setUsername();
+      }
+    });
+  }
 
-  deleteChatBtn.addEventListener("click", deleteChat);
+  if (sendBtn) sendBtn.addEventListener("click", sendMessage);
+  if (messageInput) {
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
 
-  changeUserBtn.addEventListener("click", () => {
-    showUsernameScreen();
-  });
+  if (deleteChatBtn) deleteChatBtn.addEventListener("click", deleteChat);
 
-  toggleThemeBtn.addEventListener("click", toggleTheme);
-  toggleThemeBtn2.addEventListener("click", toggleTheme);
+  if (changeUserBtn) {
+    changeUserBtn.addEventListener("click", () => {
+      showUsernameScreen();
+    });
+  }
+
+  if (toggleThemeBtn) toggleThemeBtn.addEventListener("click", toggleTheme);
+  if (toggleThemeBtn2) toggleThemeBtn2.addEventListener("click", toggleTheme);
+
+  // Cross-tab sync
+  setupStorageSync();
 
   // Auto-login if user exists
   const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
   if (savedUser) {
-    username = savedUser;
+    username = sanitizeUsername(savedUser);
     messages = loadMessages();
     showChatScreen();
     renderAllMessages();
