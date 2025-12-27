@@ -59,3 +59,12 @@
         <button id="sendBtn" class="btn primary">Send</button>
       </footer>
 
+  <p id="chatHint" class="hint">Tip: Press <b>Enter</b> to send.</p>
+    </section>
+
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
