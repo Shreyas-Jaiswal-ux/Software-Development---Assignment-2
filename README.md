@@ -378,3 +378,15 @@ Each test includes an expected result and the actual outcome observed during tes
 
 ---
 
+## **4.5 Non-Functional / Usability Tests**
+
+| Test ID | Area | Test Steps | Expected Result | Actual Result | Pass/Fail | Evidence |
+|---|---|---|---|---|---|---|
+| NFR-01 | Mobile responsiveness | Open on mobile OR narrow browser width | UI adapts, no overlapping, readable text |  |  |  |
+| NFR-02 | Desktop layout | Open on desktop wide screen | Layout stays centred and clean |  |  |  |
+| NFR-03 | Performance (basic) | Send 20+ messages quickly | App remains responsive, no freezing/crash |  |  |  |
+| NFR-04 | Readability | Check contrast + spacing in dark/light mode | Text is readable, buttons clearly visible |  |  |  |
+| NFR-05 | Input usability | Type message with emojis | Emoji displays correctly and UI does not break |  |  |  |
+
+---
+
