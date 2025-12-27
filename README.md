@@ -355,5 +355,13 @@ Each test includes an expected result and the actual outcome observed during tes
 | TC-07 | Send Message (Enter Key) | Type message → press **Enter** | Message sends instantly without page refresh |  |  |  |
 | TC-08 | Prevent Empty Messages | Leave message blank → press Send/Enter | No message added |  |  |  |
 | TC-09 | Character Limit | Paste/enter very long message (>300 chars) | Message input stops at 300 characters |  |  |  |
-
+| TC-10 | Chat History Persistence | Send 2 messages → Refresh page | Messages remain (loaded from localStorage) |  |  |  |
+| TC-11 | Auto-Scroll | Send multiple messages until list scrolls | Chat automatically scrolls to newest message |  |  |  |
+| TC-12 | Delete Chat Confirmation | Click **Delete Chat** | Confirmation popup appears |  |  |  |
+| TC-13 | Delete Chat Cancel | Click **Delete Chat** → Cancel | No messages removed |  |  |  |
+| TC-14 | Delete Chat Confirm | Click **Delete Chat** → Confirm | Messages cleared and storage reset |  |  |  |
+| TC-15 | Theme Toggle (Username Screen) | Click Toggle on username screen | Theme switches light/dark |  |  |  |
+| TC-16 | Theme Toggle (Chat Screen) | Click Toggle Theme on chat screen | Theme switches light/dark |  |  |  |
+| TC-17 | Theme Persistence | Set light mode → refresh | Theme remains the same after refresh |  |  |  |
+| TC-18 | Change User | Click **Change User** | App returns to username screen |  |  |  |
 
