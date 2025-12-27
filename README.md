@@ -391,10 +391,23 @@ Each test includes an expected result and the actual outcome observed during tes
 ---
 
 ## **4.6 Bug Log (During Testing)**
-*(Fill this in only if you find issues — even 1–2 bugs with fixes looks really good.)*
+
 
 | Bug ID | Issue Found | Steps to Reproduce | Severity | Fix Applied | Status |
 |---|---|---|---|---|---|
 | BUG-01 |  |  | Low/Med/High |  | Open/Fixed |
+
+---
+
+## **4.7 Testing Summary**
+After completing the test cases above, the application successfully met the core requirements:
+- Username entry and validation
+- Instant message sending and display
+- LocalStorage persistence
+- Delete chat functionality with confirmation
+- Theme toggle with persistence
+- Responsive UI on mobile and desktop
+
+Any bugs identified were documented and resolved in the Bug Log section.
 
 
