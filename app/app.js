@@ -50,3 +50,7 @@
         </div>
       </header>
 
+ <section class="chat-area" aria-label="Messages">
+        <div id="messages" class="messages"></div>
+      </section>
+
