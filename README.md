@@ -332,5 +332,15 @@ DOM updates used instead of page refresh for real-time behaviour
 Testing was carried out using **manual functional testing** (checking features work as expected) and **basic usability testing** (checking the UI feels clear and works on different screen sizes).  
 Each test includes an expected result and the actual outcome observed during testing.
 
+---
+
+## **4.2 Test Environment**
+- **Devices tested:** Desktop/Laptop + Mobile (responsive layout)
+- **Browsers tested:** Chrome (primary), Edge (optional)
+- **Storage:** localStorage used for saving username, theme and chat history
+- **Test type:** Manual black-box testing (testing features through the UI)
+
+---
+
 
 
