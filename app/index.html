@@ -1,253 +1,68 @@
 <!-- Chat App HTML -->
 
-:root{
-  --bg: #0b0f14;
-  --card: #111827;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --border: rgba(255,255,255,0.10);
-  --primary: #1d9bf0; /* twitter-ish */
-  --danger: #ef4444;
-  --input: #0f172a;
-  --shadow: 0 10px 30px rgba(0,0,0,0.35);
-  --radius: 16px;
-  --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat App</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="app">
 
-/* Light mode */
-[data-theme="light"]{
-  --bg: #f6f7fb;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #475569;
-  --border: rgba(2,6,23,0.12);
-  --input: #f1f5f9;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-}
+    <!-- ===== Username Screen ===== -->
+    <section id="screen-username" class="screen active" aria-label="Username screen">
+      <div class="card">
+        <h1 class="title">Chat App</h1>
+        <p class="subtitle">Twitter-ish vibes. Simple. Fast. Local.</p>
 
-*{ box-sizing: border-box; }
-body{
-  margin:0;
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-}
+        <label class="label" for="usernameInput">Enter a username</label>
+        <input id="usernameInput" class="input" type="text" maxlength="20" placeholder="e.g. Shreyas" autocomplete="nickname" />
 
-.app{
-  min-height: 100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 18px;
-}
+        <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
 
-/* Screens */
-.screen{ display:none; width: min(820px, 100%); }
-.screen.active{ display:block; }
+        <button id="enterChatBtn" class="btn primary">Enter Chat</button>
 
-.card{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  box-shadow: var(--shadow);
-}
+        <div class="tiny-row">
+          <span class="tiny">Mode</span>
+          <button id="toggleThemeBtn" class="btn small">Toggle</button>
+        </div>
+      </div>
+    </section>
 
-.title{
-  margin: 0 0 6px;
-  font-size: 28px;
-  letter-spacing: -0.5px;
-}
-.subtitle{
-  margin: 0 0 18px;
-  color: var(--muted);
-  line-height: 1.4;
-}
+    <!-- ===== Chat Screen ===== -->
+    <section id="screen-chat" class="screen" aria-label="Chat screen">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="avatar" aria-hidden="true"></div>
+          <div>
+            <div class="topbar-title">Chat</div>
+            <div class="topbar-subtitle">Signed in as <span id="currentUserLabel" class="pill">user</span></div>
+          </div>
+        </div>
 
-.label{
-  display:block;
-  margin: 10px 0 6px;
-  color: var(--muted);
-  font-size: 14px;
-}
+        <div class="topbar-right">
+          <button id="toggleThemeBtn2" class="btn small">Toggle Theme</button>
+          <button id="deleteChatBtn" class="btn danger small">Delete Chat</button>
+          <button id="changeUserBtn" class="btn small">Change User</button>
+        </div>
+      </header>
 
-.input{
-  width:100%;
-  padding: 12px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--input);
-  color: var(--text);
-  outline: none;
-}
-.input:focus{
-  border-color: rgba(29,155,240,0.55);
-  box-shadow: 0 0 0 4px rgba(29,155,240,0.12);
-}
+      <section class="chat-area" aria-label="Messages">
+        <div id="messages" class="messages"></div>
+      </section>
 
-.btn{
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-}
-.btn:hover{ filter: brightness(1.05); }
-.btn.primary{
-  margin-top: 12px;
-  background: var(--primary);
-  border-color: transparent;
-  color: white;
-  font-weight: 600;
-}
-.btn.danger{
-  background: var(--danger);
-  border-color: transparent;
-  color: white;
-}
-.btn.small{
-  padding: 8px 10px;
-  border-radius: 10px;
-  font-size: 13px;
-}
+      <footer class="composer" aria-label="Message composer">
+        <input id="messageInput" class="input" type="text" maxlength="300" placeholder="Type a message… (emojis work 😭🔥)" />
+        <button id="sendBtn" class="btn primary">Send</button>
+      </footer>
 
-.error{
-  min-height: 18px;
-  margin: 8px 0 0;
-  color: var(--danger);
-  font-size: 13px;
-}
+      <p id="chatHint" class="hint">Tip: Press <b>Enter</b> to send.</p>
+    </section>
 
-.tiny-row{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  margin-top: 14px;
-  color: var(--muted);
-  font-size: 13px;
-}
+  </main>
 
-/* Chat layout */
-#screen-chat{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.topbar-left{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-.avatar{
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  background: rgba(29,155,240,0.25);
-  border: 1px solid rgba(29,155,240,0.35);
-}
-.topbar-title{
-  font-weight: 800;
-  letter-spacing: -0.2px;
-}
-.topbar-subtitle{
-  color: var(--muted);
-  font-size: 13px;
-}
-.pill{
-  display:inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-
-.topbar-right{
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-/* Message list */
-.chat-area{
-  height: min(62vh, 520px);
-  padding: 14px;
-  overflow: auto;
-}
-
-.messages{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.msg{
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
-  border-radius: 14px;
-  padding: 10px 12px;
-  max-width: 85%;
-}
-
-.msg.me{
-  align-self: flex-end;
-}
-
-.msg-top{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-.msg-user{
-  font-weight: 700;
-  font-size: 13px;
-}
-.msg-time{
-  color: var(--muted);
-  font-size: 12px;
-}
-.msg-text{
-  line-height: 1.35;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-}
-
-/* Composer */
-.composer{
-  display:flex;
-  gap: 10px;
-  padding: 14px;
-  border-top: 1px solid var(--border);
-}
-.composer .input{
-  flex: 1;
-}
-
-.hint{
-  margin: 0;
-  padding: 10px 14px 14px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-/* Responsive */
-@media (max-width: 520px){
-  .chat-area{ height: 62vh; }
-  .topbar{ align-items:flex-start; }
-  .msg{ max-width: 92%; }
-}
+  <script src="./app.js"></script>
+</body>
+</html>
