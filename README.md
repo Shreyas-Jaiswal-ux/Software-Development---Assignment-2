@@ -351,6 +351,9 @@ Each test includes an expected result and the actual outcome observed during tes
 | TC-03 | Username Validation (Too short) | Enter `A` → Enter Chat | Error shown: “Username must be at least 2 characters.” |  |  |  |
 | TC-04 | Valid Username ورود | Enter valid username (e.g., Shreyas) → Enter Chat | App switches to chat screen and shows username |  |  |  |
 | TC-05 | Auto Login | Close tab → reopen app (same browser) | If username saved, app opens directly in chat screen |  |  |  |
-
+| TC-06 | Send Message (Button) | Type message → click **Send** | Message appears instantly in chat with timestamp |  |  |  |
+| TC-07 | Send Message (Enter Key) | Type message → press **Enter** | Message sends instantly without page refresh |  |  |  |
+| TC-08 | Prevent Empty Messages | Leave message blank → press Send/Enter | No message added |  |  |  |
+| TC-09 | Character Limit | Paste/enter very long message (>300 chars) | Message input stops at 300 characters |  |  |  |
 
 
