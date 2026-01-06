@@ -1,68 +1,118 @@
-<!-- Chat App HTML -->
-
+<!-- Chat App HTML  -->
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Chat App</title>
+  <meta name="description" content="A simple, fast, local chat app with username login, theme toggle, and chat history." />
+
+  <!-- Tiny inline favicon so browsers stop complaining -->
+  <link rel="icon" href="data:," />
+
   <link rel="stylesheet" href="./style.css" />
+
+  <!-- Defer JS so DOM loads first -->
+  <script src="./app.js" defer></script>
 </head>
+
 <body>
-  <main class="app">
+  <main class="app" role="main">
 
     <!-- ===== Username Screen ===== -->
     <section id="screen-username" class="screen active" aria-label="Username screen">
-      <div class="card">
-        <h1 class="title">Chat App</h1>
+      <div class="card" role="region" aria-labelledby="appTitle">
+        <h1 id="appTitle" class="title">Chat App</h1>
         <p class="subtitle">Twitter-ish vibes. Simple. Fast. Local.</p>
 
         <label class="label" for="usernameInput">Enter a username</label>
-        <input id="usernameInput" class="input" type="text" maxlength="20" placeholder="e.g. Shreyas" autocomplete="nickname" />
+        <input
+          id="usernameInput"
+          class="input"
+          type="text"
+          maxlength="20"
+          placeholder="e.g. Shreyas"
+          autocomplete="nickname"
+          spellcheck="false"
+          inputmode="text"
+          aria-describedby="usernameHelp usernameError"
+        />
+
+        <p id="usernameHelp" class="hint" style="padding: 8px 0 0; margin: 0;">
+          Use 2–20 characters. This is saved locally in your browser.
+        </p>
 
         <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
 
-        <button id="enterChatBtn" class="btn primary">Enter Chat</button>
+        <button id="enterChatBtn" class="btn primary" type="button">
+          Enter Chat
+        </button>
 
-        <div class="tiny-row">
+        <div class="tiny-row" aria-label="Theme controls">
           <span class="tiny">Mode</span>
-          <button id="toggleThemeBtn" class="btn small">Toggle</button>
+          <button id="toggleThemeBtn" class="btn small" type="button" aria-pressed="false">
+            Toggle
+          </button>
         </div>
       </div>
     </section>
 
     <!-- ===== Chat Screen ===== -->
     <section id="screen-chat" class="screen" aria-label="Chat screen">
-      <header class="topbar">
+      <header class="topbar" role="banner">
         <div class="topbar-left">
           <div class="avatar" aria-hidden="true"></div>
           <div>
             <div class="topbar-title">Chat</div>
-            <div class="topbar-subtitle">Signed in as <span id="currentUserLabel" class="pill">user</span></div>
+            <div class="topbar-subtitle">
+              Signed in as <span id="currentUserLabel" class="pill">user</span>
+            </div>
           </div>
         </div>
 
-        <div class="topbar-right">
-          <button id="toggleThemeBtn2" class="btn small">Toggle Theme</button>
-          <button id="deleteChatBtn" class="btn danger small">Delete Chat</button>
-          <button id="changeUserBtn" class="btn small">Change User</button>
+        <div class="topbar-right" aria-label="Chat actions">
+          <button id="toggleThemeBtn2" class="btn small" type="button" aria-pressed="false">
+            Toggle Theme
+          </button>
+          <button id="deleteChatBtn" class="btn danger small" type="button">
+            Delete Chat
+          </button>
+          <button id="changeUserBtn" class="btn small" type="button">
+            Change User
+          </button>
         </div>
       </header>
 
-      <section class="chat-area" aria-label="Messages">
+      <section class="chat-area" aria-label="Messages" role="log" aria-live="polite">
         <div id="messages" class="messages"></div>
       </section>
 
       <footer class="composer" aria-label="Message composer">
-        <input id="messageInput" class="input" type="text" maxlength="300" placeholder="Type a message… (emojis work 😭🔥)" />
-        <button id="sendBtn" class="btn primary">Send</button>
+        <label class="label" for="messageInput" style="position:absolute; left:-9999px;">
+          Type your message
+        </label>
+
+        <input
+          id="messageInput"
+          class="input"
+          type="text"
+          maxlength="300"
+          placeholder="Type a message… (emojis work 😭🔥)"
+          autocomplete="off"
+          spellcheck="true"
+          aria-label="Message input"
+        />
+        <button id="sendBtn" class="btn primary" type="button">
+          Send
+        </button>
       </footer>
 
-      <p id="chatHint" class="hint">Tip: Press <b>Enter</b> to send.</p>
+      <p id="chatHint" class="hint">
+        Tip: Press <b>Enter</b> to send. Your chat is saved in your browser (localStorage).
+      </p>
     </section>
 
   </main>
-
-  <script src="./app.js"></script>
 </body>
 </html>
