@@ -11,7 +11,7 @@
 // - message colours per username
 // - timestamps
 // - cross-tab sync via storage event (real-time-ish)
-// - emoji picker button (Emoji Button CDN)
+// - reply feature (click message to reply + reply preview bar)
 // =====================
 
 /** Storage keys */
@@ -33,7 +33,7 @@ const screenChat = $("screen-chat");
 const usernameForm = $("usernameForm");
 const usernameInput = $("usernameInput");
 const usernameError = $("usernameError");
-const enterChatBtn = $("enterChatBtn"); // still exists, but form submit is primary
+const enterChatBtn = $("enterChatBtn"); // form submit is primary
 
 const currentUserLabel = $("currentUserLabel");
 const messageInput = $("messageInput");
@@ -46,11 +46,15 @@ const changeUserBtn = $("changeUserBtn");
 const toggleThemeBtn = $("toggleThemeBtn");
 const toggleThemeBtn2 = $("toggleThemeBtn2");
 
-const emojiBtn = $("emojiBtn");
+/** Reply UI */
+const replyPreview = $("replyPreview");
+const replyText = $("replyText");
+const cancelReplyBtn = $("cancelReplyBtn");
 
 /** State */
 let username = "";
 let messages = [];
+let activeReply = null; // { id, user, text }
 
 /* ---------------------
    Utility
@@ -117,6 +121,29 @@ function setActiveScreen(which) {
 }
 
 /* ---------------------
+   Reply helpers
+--------------------- */
+function startReply(msg) {
+  if (!msg) return;
+  activeReply = { id: msg.id, user: msg.user, text: msg.text };
+
+  if (replyPreview) replyPreview.hidden = false;
+
+  if (replyText) {
+    const snippet = (msg.text || "").replace(/\s+/g, " ").slice(0, 80);
+    replyText.textContent = `${msg.user}: ${snippet}${msg.text.length > 80 ? "…" : ""}`;
+  }
+
+  if (messageInput) messageInput.focus();
+}
+
+function cancelReply() {
+  activeReply = null;
+  if (replyPreview) replyPreview.hidden = true;
+  if (replyText) replyText.textContent = "";
+}
+
+/* ---------------------
    Screens
 --------------------- */
 function showUsernameScreen() {
@@ -126,6 +153,7 @@ function showUsernameScreen() {
   if (usernameError) usernameError.textContent = "";
 
   username = "";
+  cancelReply();
   localStorage.removeItem(STORAGE_KEYS.USER);
 }
 
@@ -144,6 +172,7 @@ function renderMessage(msg) {
 
   const item = document.createElement("div");
   item.className = "msg";
+  item.dataset.id = msg.id;
 
   const isMe = msg.user === username;
   if (isMe) item.classList.add("me");
@@ -152,6 +181,37 @@ function renderMessage(msg) {
   const hue = hashStringToHue(msg.user);
   item.style.borderColor = `hsla(${hue}, 85%, 55%, 0.35)`;
   item.style.background = `hsla(${hue}, 85%, 55%, 0.10)`;
+
+  // Clicking a message starts a reply
+  item.addEventListener("click", () => startReply(msg));
+
+  // Reply preview inside the bubble (if msg is a reply)
+  if (msg.replyTo && msg.replyTo.text) {
+    const replyBox = document.createElement("div");
+    replyBox.style.border = `1px solid var(--border)`;
+    replyBox.style.borderRadius = "12px";
+    replyBox.style.padding = "8px 10px";
+    replyBox.style.marginBottom = "8px";
+    replyBox.style.background = "rgba(255,255,255,0.05)";
+
+    const rt = document.createElement("div");
+    rt.style.fontWeight = "800";
+    rt.style.fontSize = "12px";
+    rt.style.marginBottom = "2px";
+    rt.textContent = `Replying to ${msg.replyTo.user}`;
+
+    const rtxt = document.createElement("div");
+    rtxt.style.color = "var(--muted)";
+    rtxt.style.fontSize = "12px";
+    rtxt.style.whiteSpace = "nowrap";
+    rtxt.style.overflow = "hidden";
+    rtxt.style.textOverflow = "ellipsis";
+    rtxt.textContent = msg.replyTo.text;
+
+    replyBox.appendChild(rt);
+    replyBox.appendChild(rtxt);
+    item.appendChild(replyBox);
+  }
 
   const top = document.createElement("div");
   top.className = "msg-top";
@@ -211,7 +271,6 @@ function setUsernameFromInput() {
 }
 
 function sendMessage() {
-  // Don’t allow sending unless logged in (keeps state sane)
   if (!username) return;
 
   const text = sanitizeText(messageInput ? messageInput.value : "");
@@ -220,9 +279,17 @@ function sendMessage() {
   const safeText = text.slice(0, 300);
 
   const msg = {
+    id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
     user: username,
     text: safeText,
     time: nowTimeString(),
+    replyTo: activeReply
+      ? {
+          id: activeReply.id,
+          user: activeReply.user,
+          text: (activeReply.text || "").slice(0, 120),
+        }
+      : null,
   };
 
   messages.push(msg);
@@ -235,6 +302,7 @@ function sendMessage() {
     messageInput.focus();
   }
 
+  cancelReply();
   scrollToBottom();
 }
 
@@ -243,33 +311,9 @@ function deleteChat() {
   if (!ok) return;
 
   messages = [];
+  cancelReply();
   localStorage.removeItem(STORAGE_KEYS.MESSAGES);
   renderAllMessages();
-}
-
-/* ---------------------
-   Emoji Picker
---------------------- */
-function setupEmojiPicker() {
-  // Requires the Emoji Button CDN loaded before app.js runs
-  if (!emojiBtn || !messageInput) return;
-  if (typeof EmojiButton === "undefined") return;
-
-  const picker = new EmojiButton({
-    position: "top-start",
-    theme: "auto",
-  });
-
-  emojiBtn.addEventListener("click", () => {
-    picker.togglePicker(emojiBtn);
-  });
-
-  picker.on("emoji", (emoji) => {
-    // Simple insert at end (assignment-friendly)
-    messageInput.value += emoji;
-    messageInput.focus();
-    picker.hidePicker();
-  });
 }
 
 /* ---------------------
@@ -288,7 +332,6 @@ function setupStorageSync() {
     }
 
     if (e.key === STORAGE_KEYS.USER) {
-      // If user changed in another tab, stay consistent
       const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
       if (savedUser) {
         username = sanitizeUsername(savedUser);
@@ -323,7 +366,7 @@ function init() {
     });
   }
 
-  // Backwards compatibility: click still works if button is type="button"
+  // Backwards compatibility
   if (enterChatBtn) {
     enterChatBtn.addEventListener("click", () => {
       setUsernameFromInput();
@@ -337,9 +380,14 @@ function init() {
       if (e.key === "Enter") {
         e.preventDefault();
         sendMessage();
+      } else if (e.key === "Escape") {
+        cancelReply();
       }
     });
   }
+
+  // Cancel reply
+  if (cancelReplyBtn) cancelReplyBtn.addEventListener("click", cancelReply);
 
   // Delete / change user
   if (deleteChatBtn) deleteChatBtn.addEventListener("click", deleteChat);
@@ -353,9 +401,6 @@ function init() {
   // Theme toggles
   if (toggleThemeBtn) toggleThemeBtn.addEventListener("click", toggleTheme);
   if (toggleThemeBtn2) toggleThemeBtn2.addEventListener("click", toggleTheme);
-
-  // Emoji picker
-  setupEmojiPicker();
 
   // Cross-tab sync
   setupStorageSync();
