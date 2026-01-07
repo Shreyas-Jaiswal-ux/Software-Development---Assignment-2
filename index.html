@@ -1,23 +1,17 @@
-<!-- Chat App HTML  -->
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="description" content="A simple local chat app with username login, theme toggle, and saved chat history." />
+  <meta name="theme-color" content="#1d9bf0" />
   <title>Chat App</title>
-  <meta name="description" content="A simple, fast, local chat app with username login, theme toggle, and chat history." />
-
-  <!-- Tiny inline favicon so browsers stop complaining -->
-  <link rel="icon" href="data:," />
-
   <link rel="stylesheet" href="./style.css" />
-
-  <!-- Defer JS so DOM loads first -->
-  <script src="./app.js" defer></script>
 </head>
 
 <body>
+  <a href="#screen-username" class="sr-only">Skip to content</a>
+
   <main class="app" role="main">
 
     <!-- ===== Username Screen ===== -->
@@ -26,35 +20,41 @@
         <h1 id="appTitle" class="title">Chat App</h1>
         <p class="subtitle">Twitter-ish vibes. Simple. Fast. Local.</p>
 
-        <label class="label" for="usernameInput">Enter a username</label>
-        <input
-          id="usernameInput"
-          class="input"
-          type="text"
-          maxlength="20"
-          placeholder="e.g. Shreyas"
-          autocomplete="nickname"
-          spellcheck="false"
-          inputmode="text"
-          aria-describedby="usernameHelp usernameError"
-        />
+        <form id="usernameForm" autocomplete="on">
+          <label class="label" for="usernameInput">Enter a username</label>
+          <input
+            id="usernameInput"
+            class="input"
+            type="text"
+            minlength="2"
+            maxlength="20"
+            placeholder="e.g. Shreyas"
+            autocomplete="nickname"
+            aria-describedby="usernameHelp usernameError"
+            required
+          />
 
-        <p id="usernameHelp" class="hint" style="padding: 8px 0 0; margin: 0;">
-          Use 2–20 characters. This is saved locally in your browser.
-        </p>
+          <p id="usernameHelp" class="subtitle" style="margin-top:10px;">
+            Use <b>2–20</b> characters. Saved locally in your browser.
+          </p>
 
-        <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
+          <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
 
-        <button id="enterChatBtn" class="btn primary" type="button">
-          Enter Chat
-        </button>
+          <button id="enterChatBtn" class="btn primary" type="button">
+            Enter Chat
+          </button>
+        </form>
 
         <div class="tiny-row" aria-label="Theme controls">
           <span class="tiny">Mode</span>
-          <button id="toggleThemeBtn" class="btn small" type="button" aria-pressed="false">
+          <button id="toggleThemeBtn" class="btn small" type="button" aria-label="Toggle theme">
             Toggle
           </button>
         </div>
+
+        <noscript>
+          <p class="error">This app needs JavaScript enabled to work.</p>
+        </noscript>
       </div>
     </section>
 
@@ -72,15 +72,9 @@
         </div>
 
         <div class="topbar-right" aria-label="Chat actions">
-          <button id="toggleThemeBtn2" class="btn small" type="button" aria-pressed="false">
-            Toggle Theme
-          </button>
-          <button id="deleteChatBtn" class="btn danger small" type="button">
-            Delete Chat
-          </button>
-          <button id="changeUserBtn" class="btn small" type="button">
-            Change User
-          </button>
+          <button id="toggleThemeBtn2" class="btn small" type="button">Toggle Theme</button>
+          <button id="deleteChatBtn" class="btn danger small" type="button">Delete Chat</button>
+          <button id="changeUserBtn" class="btn small" type="button">Change User</button>
         </div>
       </header>
 
@@ -89,10 +83,7 @@
       </section>
 
       <footer class="composer" aria-label="Message composer">
-        <label class="label" for="messageInput" style="position:absolute; left:-9999px;">
-          Type your message
-        </label>
-
+        <label for="messageInput" class="sr-only">Message</label>
         <input
           id="messageInput"
           class="input"
@@ -100,19 +91,44 @@
           maxlength="300"
           placeholder="Type a message… (emojis work 😭🔥)"
           autocomplete="off"
-          spellcheck="true"
-          aria-label="Message input"
         />
-        <button id="sendBtn" class="btn primary" type="button">
-          Send
-        </button>
+        <button id="sendBtn" class="btn primary" type="button">Send</button>
       </footer>
 
       <p id="chatHint" class="hint">
-        Tip: Press <b>Enter</b> to send. Your chat is saved in your browser (localStorage).
+        Tip: Press <b>Enter</b> to send. Chat is saved in your browser (localStorage).
       </p>
     </section>
 
   </main>
+
+  <script src="./app.js"></script>
+
+  <!-- Small helper for skip-link / screen-reader-only -->
+  <style>
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    .sr-only:focus{
+      position:static;
+      width:auto;
+      height:auto;
+      margin:10px;
+      clip:auto;
+      padding:10px;
+      background:#000;
+      color:#fff;
+      border-radius:10px;
+      display:inline-block;
+    }
+  </style>
 </body>
 </html>
