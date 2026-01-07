@@ -10,9 +10,9 @@
 </head>
 
 <body>
-  <a href="#screen-username" class="sr-only">Skip to content</a>
+  <a href="#main" class="sr-only">Skip to content</a>
 
-  <main class="app" role="main">
+  <main id="main" class="app" role="main">
 
     <!-- ===== Username Screen ===== -->
     <section id="screen-username" class="screen active" aria-label="Username screen">
@@ -20,7 +20,7 @@
         <h1 id="appTitle" class="title">Chat App</h1>
         <p class="subtitle">Twitter-ish vibes. Simple. Fast. Local.</p>
 
-        <form id="usernameForm" autocomplete="on">
+        <form id="usernameForm" autocomplete="on" novalidate>
           <label class="label" for="usernameInput">Enter a username</label>
           <input
             id="usernameInput"
@@ -40,7 +40,7 @@
 
           <p id="usernameError" class="error" role="alert" aria-live="polite"></p>
 
-          <button id="enterChatBtn" class="btn primary" type="button">
+          <button id="enterChatBtn" class="btn primary" type="submit">
             Enter Chat
           </button>
         </form>
@@ -120,7 +120,6 @@
 
   <!-- ✅ Minimal init (works alongside your existing app.js) -->
   <script>
-    // Emoji picker wiring (safe guard if elements exist)
     (function () {
       const emojiBtn = document.getElementById("emojiBtn");
       const messageInput = document.getElementById("messageInput");
@@ -128,7 +127,7 @@
 
       const picker = new EmojiButton({
         position: "top-start",
-        theme: "auto", // follows light/dark if supported
+        theme: "auto",
       });
 
       emojiBtn.addEventListener("click", () => {
@@ -138,6 +137,7 @@
       picker.on("emoji", (emoji) => {
         messageInput.value += emoji;
         messageInput.focus();
+        picker.hidePicker(); // ✅ closes after selecting
       });
     })();
   </script>
