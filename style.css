@@ -1,4 +1,4 @@
-/* Chat App Styles */ 
+/* Chat App Styles */
 
 :root{
   --bg: #0b0f14;
@@ -208,6 +208,11 @@ body{
   border-radius: 14px;
   padding: 10px 12px;
   max-width: 85%;
+  cursor: pointer; /* click-to-reply hint */
+}
+
+.msg:hover{
+  filter: brightness(1.03);
 }
 
 .msg.me{
@@ -235,46 +240,107 @@ body{
   white-space: pre-wrap;
 }
 
+/* =========================
+   Reply UI (WhatsApp-ish)
+========================= */
+
+.composer-wrap{
+  border-top: 1px solid var(--border);
+}
+
+/* Reply preview bar */
+.reply-preview{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .reply-preview{
+  background: rgba(2,6,23,0.03);
+}
+
+.reply-left{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.reply-icon{
+  width: 34px;
+  height: 34px;
+  display:grid;
+  place-items:center;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  flex: 0 0 auto;
+  font-size: 14px;
+}
+
+[data-theme="light"] .reply-icon{
+  background: rgba(2,6,23,0.03);
+}
+
+.reply-meta{
+  display:flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.reply-title{
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+}
+
+.reply-text{
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Cancel reply button */
+.reply-cancel{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  flex: 0 0 auto;
+  display:grid;
+  place-items:center;
+}
+
+.reply-cancel:hover{
+  filter: brightness(1.08);
+}
+
 /* Composer */
 .composer{
   display:flex;
   gap: 10px;
   padding: 14px;
-  border-top: 1px solid var(--border);
   align-items: center;
+  border-top: 0; /* composer-wrap handles the border now */
 }
 
 .composer .input{
   flex: 1 1 auto;
-  min-width: 0; /* prevents weird overflow on small screens */
+  min-width: 0;
 }
 
-/* ✅ Emoji button styling */
-#emojiBtn{
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  line-height: 1;
-  font-size: 18px;
-  background: rgba(255,255,255,0.02);
-}
-
-#emojiBtn:hover{
-  background: rgba(255,255,255,0.06);
-}
-
-[data-theme="light"] #emojiBtn{
-  background: rgba(2,6,23,0.03);
-}
-[data-theme="light"] #emojiBtn:hover{
-  background: rgba(2,6,23,0.06);
-}
-
-/* (Optional) Make Send button consistent height with input + emoji */
+/* Keep send button height clean */
 #sendBtn{
   height: 44px;
   padding: 0 16px;
