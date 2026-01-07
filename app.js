@@ -11,13 +11,14 @@
 // - message colours per username
 // - timestamps
 // - cross-tab sync via storage event (real-time-ish)
+// - emoji picker button (Emoji Button CDN)
 // =====================
 
 /** Storage keys */
 const STORAGE_KEYS = {
   THEME: "sd1_chat_theme",
   USER: "sd1_chat_username",
-  MESSAGES: "sd1_chat_messages"
+  MESSAGES: "sd1_chat_messages",
 };
 
 /** Helpers: DOM grab + safety */
@@ -29,9 +30,10 @@ function $(id) {
 const screenUsername = $("screen-username");
 const screenChat = $("screen-chat");
 
+const usernameForm = $("usernameForm");
 const usernameInput = $("usernameInput");
 const usernameError = $("usernameError");
-const enterChatBtn = $("enterChatBtn");
+const enterChatBtn = $("enterChatBtn"); // still exists, but form submit is primary
 
 const currentUserLabel = $("currentUserLabel");
 const messageInput = $("messageInput");
@@ -43,6 +45,8 @@ const changeUserBtn = $("changeUserBtn");
 
 const toggleThemeBtn = $("toggleThemeBtn");
 const toggleThemeBtn2 = $("toggleThemeBtn2");
+
+const emojiBtn = $("emojiBtn");
 
 /** State */
 let username = "";
@@ -61,7 +65,6 @@ function sanitizeText(text) {
 }
 
 function sanitizeUsername(name) {
-  // Remove extra spaces inside too, and cap length for safety
   const cleaned = sanitizeText(name).replace(/\s+/g, " ");
   return cleaned.slice(0, 20);
 }
@@ -100,14 +103,12 @@ function loadMessages() {
 }
 
 function scrollToBottom() {
-  // Safe auto-scroll
   const chatArea = document.querySelector(".chat-area");
   if (!chatArea) return;
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
 function setActiveScreen(which) {
-  // Safe screen switching even if one screen missing
   if (screenUsername) screenUsername.classList.remove("active");
   if (screenChat) screenChat.classList.remove("active");
 
@@ -186,17 +187,17 @@ function renderAllMessages() {
 /* ---------------------
    Core Actions
 --------------------- */
-function setUsername() {
+function setUsernameFromInput() {
   const input = sanitizeUsername(usernameInput ? usernameInput.value : "");
 
   if (!input) {
     if (usernameError) usernameError.textContent = "Please enter a username.";
-    return;
+    return false;
   }
 
   if (input.length < 2) {
     if (usernameError) usernameError.textContent = "Username must be at least 2 characters.";
-    return;
+    return false;
   }
 
   username = input;
@@ -206,25 +207,27 @@ function setUsername() {
   messages = loadMessages();
   showChatScreen();
   renderAllMessages();
+  return true;
 }
 
 function sendMessage() {
-  const text = sanitizeText(messageInput ? messageInput.value : "");
-  if (!text) return; // ignore empty messages
+  // Don’t allow sending unless logged in (keeps state sane)
+  if (!username) return;
 
-  // Optional: stop ultra-long spam
+  const text = sanitizeText(messageInput ? messageInput.value : "");
+  if (!text) return;
+
   const safeText = text.slice(0, 300);
 
   const msg = {
-    user: username || "user",
+    user: username,
     text: safeText,
-    time: nowTimeString()
+    time: nowTimeString(),
   };
 
   messages.push(msg);
   saveMessages();
 
-  // Render just this new message (faster than re-rendering everything)
   renderMessage(msg);
 
   if (messageInput) {
@@ -245,6 +248,31 @@ function deleteChat() {
 }
 
 /* ---------------------
+   Emoji Picker
+--------------------- */
+function setupEmojiPicker() {
+  // Requires the Emoji Button CDN loaded before app.js runs
+  if (!emojiBtn || !messageInput) return;
+  if (typeof EmojiButton === "undefined") return;
+
+  const picker = new EmojiButton({
+    position: "top-start",
+    theme: "auto",
+  });
+
+  emojiBtn.addEventListener("click", () => {
+    picker.togglePicker(emojiBtn);
+  });
+
+  picker.on("emoji", (emoji) => {
+    // Simple insert at end (assignment-friendly)
+    messageInput.value += emoji;
+    messageInput.focus();
+    picker.hidePicker();
+  });
+}
+
+/* ---------------------
    Real-time-ish sync (across tabs)
 --------------------- */
 function setupStorageSync() {
@@ -258,6 +286,17 @@ function setupStorageSync() {
       const newTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
       document.documentElement.setAttribute("data-theme", newTheme);
     }
+
+    if (e.key === STORAGE_KEYS.USER) {
+      // If user changed in another tab, stay consistent
+      const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+      if (savedUser) {
+        username = sanitizeUsername(savedUser);
+        if (currentUserLabel) currentUserLabel.textContent = username;
+      } else {
+        showUsernameScreen();
+      }
+    }
   });
 }
 
@@ -269,24 +308,29 @@ function init() {
   const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
   setTheme(savedTheme);
 
-  // Clear username error as user types (nice UX)
+  // Clear username error as user types
   if (usernameInput && usernameError) {
     usernameInput.addEventListener("input", () => {
       usernameError.textContent = "";
     });
   }
 
-  // Events (safe binding)
-  if (enterChatBtn) enterChatBtn.addEventListener("click", setUsername);
-  if (usernameInput) {
-    usernameInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        setUsername();
-      }
+  // Username form submit (primary)
+  if (usernameForm) {
+    usernameForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      setUsernameFromInput();
     });
   }
 
+  // Backwards compatibility: click still works if button is type="button"
+  if (enterChatBtn) {
+    enterChatBtn.addEventListener("click", () => {
+      setUsernameFromInput();
+    });
+  }
+
+  // Send actions
   if (sendBtn) sendBtn.addEventListener("click", sendMessage);
   if (messageInput) {
     messageInput.addEventListener("keydown", (e) => {
@@ -297,6 +341,7 @@ function init() {
     });
   }
 
+  // Delete / change user
   if (deleteChatBtn) deleteChatBtn.addEventListener("click", deleteChat);
 
   if (changeUserBtn) {
@@ -305,8 +350,12 @@ function init() {
     });
   }
 
+  // Theme toggles
   if (toggleThemeBtn) toggleThemeBtn.addEventListener("click", toggleTheme);
   if (toggleThemeBtn2) toggleThemeBtn2.addEventListener("click", toggleTheme);
+
+  // Emoji picker
+  setupEmojiPicker();
 
   // Cross-tab sync
   setupStorageSync();
