@@ -82,28 +82,35 @@
         <div id="messages" class="messages"></div>
       </section>
 
-      <!-- ✅ Updated composer with emoji picker button -->
-      <footer class="composer" aria-label="Message composer">
-        <button
-          id="emojiBtn"
-          class="btn small"
-          type="button"
-          aria-label="Open emoji picker"
-          title="Emoji"
-        >
-          😊
-        </button>
+      <!-- ✅ Reply bar + composer -->
+      <footer class="composer-wrap" aria-label="Message composer">
 
-        <label for="messageInput" class="sr-only">Message</label>
-        <input
-          id="messageInput"
-          class="input"
-          type="text"
-          maxlength="300"
-          placeholder="Type a message…"
-          autocomplete="off"
-        />
-        <button id="sendBtn" class="btn primary" type="button">Send</button>
+        <!-- Reply preview (hidden until replying) -->
+        <div id="replyPreview" class="reply-preview" hidden>
+          <div class="reply-left">
+            <span class="reply-icon" aria-hidden="true">↩</span>
+            <div class="reply-meta">
+              <div class="reply-title">Reply</div>
+              <div id="replyText" class="reply-text">Replying to…</div>
+            </div>
+          </div>
+
+          <button id="cancelReplyBtn" class="reply-cancel" type="button" aria-label="Cancel reply">✕</button>
+        </div>
+
+        <div class="composer">
+          <label for="messageInput" class="sr-only">Message</label>
+          <input
+            id="messageInput"
+            class="input"
+            type="text"
+            maxlength="300"
+            placeholder="Type a message…"
+            autocomplete="off"
+          />
+          <button id="sendBtn" class="btn primary" type="button">Send</button>
+        </div>
+
       </footer>
 
       <p id="chatHint" class="hint">
@@ -113,34 +120,8 @@
 
   </main>
 
-  <!-- ✅ Emoji picker library -->
-  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
-
+  <!-- ✅ Only your app script now -->
   <script src="./app.js"></script>
-
-  <!-- ✅ Minimal init (works alongside your existing app.js) -->
-  <script>
-    (function () {
-      const emojiBtn = document.getElementById("emojiBtn");
-      const messageInput = document.getElementById("messageInput");
-      if (!emojiBtn || !messageInput || typeof EmojiButton === "undefined") return;
-
-      const picker = new EmojiButton({
-        position: "top-start",
-        theme: "auto",
-      });
-
-      emojiBtn.addEventListener("click", () => {
-        picker.togglePicker(emojiBtn);
-      });
-
-      picker.on("emoji", (emoji) => {
-        messageInput.value += emoji;
-        messageInput.focus();
-        picker.hidePicker(); // ✅ closes after selecting
-      });
-    })();
-  </script>
 
   <!-- Small helper for skip-link / screen-reader-only -->
   <style>
