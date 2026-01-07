@@ -82,14 +82,25 @@
         <div id="messages" class="messages"></div>
       </section>
 
+      <!-- ✅ Updated composer with emoji picker button -->
       <footer class="composer" aria-label="Message composer">
+        <button
+          id="emojiBtn"
+          class="btn small"
+          type="button"
+          aria-label="Open emoji picker"
+          title="Emoji"
+        >
+          😊
+        </button>
+
         <label for="messageInput" class="sr-only">Message</label>
         <input
           id="messageInput"
           class="input"
           type="text"
           maxlength="300"
-          placeholder="Type a message… (emojis work 😭🔥)"
+          placeholder="Type a message…"
           autocomplete="off"
         />
         <button id="sendBtn" class="btn primary" type="button">Send</button>
@@ -102,7 +113,34 @@
 
   </main>
 
+  <!-- ✅ Emoji picker library -->
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+
   <script src="./app.js"></script>
+
+  <!-- ✅ Minimal init (works alongside your existing app.js) -->
+  <script>
+    // Emoji picker wiring (safe guard if elements exist)
+    (function () {
+      const emojiBtn = document.getElementById("emojiBtn");
+      const messageInput = document.getElementById("messageInput");
+      if (!emojiBtn || !messageInput || typeof EmojiButton === "undefined") return;
+
+      const picker = new EmojiButton({
+        position: "top-start",
+        theme: "auto", // follows light/dark if supported
+      });
+
+      emojiBtn.addEventListener("click", () => {
+        picker.togglePicker(emojiBtn);
+      });
+
+      picker.on("emoji", (emoji) => {
+        messageInput.value += emoji;
+        messageInput.focus();
+      });
+    })();
+  </script>
 
   <!-- Small helper for skip-link / screen-reader-only -->
   <style>
