@@ -1,4 +1,4 @@
-/* Chat App Styles */
+/* Chat App Styles */ 
 
 :root{
   --bg: #0b0f14;
@@ -92,8 +92,16 @@ body{
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
+  transition: transform 0.03s ease, filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .btn:hover{ filter: brightness(1.05); }
+.btn:active{ transform: translateY(1px); }
+.btn:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(29,155,240,0.12);
+  border-color: rgba(29,155,240,0.55);
+}
+
 .btn.primary{
   margin-top: 12px;
   background: var(--primary);
@@ -233,9 +241,44 @@ body{
   gap: 10px;
   padding: 14px;
   border-top: 1px solid var(--border);
+  align-items: center;
 }
+
 .composer .input{
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0; /* prevents weird overflow on small screens */
+}
+
+/* ✅ Emoji button styling */
+#emojiBtn{
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  font-size: 18px;
+  background: rgba(255,255,255,0.02);
+}
+
+#emojiBtn:hover{
+  background: rgba(255,255,255,0.06);
+}
+
+[data-theme="light"] #emojiBtn{
+  background: rgba(2,6,23,0.03);
+}
+[data-theme="light"] #emojiBtn:hover{
+  background: rgba(2,6,23,0.06);
+}
+
+/* (Optional) Make Send button consistent height with input + emoji */
+#sendBtn{
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
 }
 
 .hint{
@@ -250,4 +293,5 @@ body{
   .chat-area{ height: 62vh; }
   .topbar{ align-items:flex-start; }
   .msg{ max-width: 92%; }
+  .topbar-right{ width: 100%; }
 }
